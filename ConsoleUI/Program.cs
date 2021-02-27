@@ -1,8 +1,10 @@
 ﻿using Business.Concrete;
 using DataAccess.Concrete.EntiyFramework;
 using DataAccess.Concrete.InMemory;
+using Entities.Concrete;
 using System;
 using System.ComponentModel;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ConsoleUI
 {
@@ -11,7 +13,23 @@ namespace ConsoleUI
         static void Main(string[] args)
         {
             // CategoryTest();
-            ProductTest();
+            //ProductTest();
+
+            ProductManager productmanager = new ProductManager(new EfProductDal());
+            var result = productmanager.GetAll();
+
+            foreach (var product in result.Data)
+            {
+                Console.WriteLine(product.ProductName);
+            };
+
+            //CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
+            //foreach (var product in categoryManager.GetAll())
+            //{
+            //    Console.WriteLine(product.CategoryName);
+            //};
+            
+           
         }
 
         private static void CategoryTest()
@@ -26,10 +44,18 @@ namespace ConsoleUI
         private static void ProductTest()
         {
             ProductManager productmanager = new ProductManager(new EfProductDal());
-            foreach (var product in productmanager.GetProductDetails())
+            var result = productmanager.GetProductDetails();
+            if (result.Success==true)
             {
-                Console.WriteLine(product.ProductName+" "+product.CategoryName);
-            };
+                foreach (var product in result.Data)
+                {
+                    Console.WriteLine(product.ProductName + " " + product.CategoryName);
+                };
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
         }
     }
 }
